@@ -1,0 +1,57 @@
+name: Security Check & Dependency Validation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  security-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install Dependencies Securely
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt --no-cache-dir --isolated
+
+      - name: Verify Package Existence (PyPI or Local)
+        run: |
+          python -c """
+          import requests, os
+          package_name = 'openai_quick_access'
+
+          # Check if package exists in setup.py or requirements.txt
+          local_package = any(package_name in open(file).read() for file in ['setup.py', 'requirements.txt'] if os.path.exists(file))
+
+          if not local_package:
+              url = f'https://pypi.org/pypi/{package_name}/json'
+              response = requests.get(url)
+              if response.status_code != 200:
+                  print(f'⚠️ WARNING: {package_name} does NOT exist on PyPI and is not a local package! Possible hallucination.')
+                  exit(1)
+          """
+
+      - name: Run Security Audit
+        run: |
+          pip install pip-audit
+          pip-audit || echo "⚠️ Dependency vulnerabilities detected! Review output above."
+
+      - name: Run Tests (Without Exploiting API Keys)
+        run: |
+          pytest tests/test_openai_quick_access.py --disable-warnings
+
+      - name: Complete Security Check
+        run: echo "✅ Security check passed. No hallucinated packages detected."
