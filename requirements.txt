@@ -14,7 +14,6 @@ Jinja2==3.1.5
 MarkupSafe==3.0.2
 multidict==6.1.0
 openai==0.28.0
-openai_quick_access @ file:///Users/anshkumar/Downloads/openai_quick_access
 propcache==0.3.0
 requests==2.32.3
 tqdm==4.67.1
