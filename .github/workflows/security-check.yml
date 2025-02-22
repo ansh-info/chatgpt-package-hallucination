@@ -24,6 +24,7 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
+          pip install pytest
           pip install --upgrade pip setuptools wheel  # Ensure setuptools is installed
           pip install -r requirements.txt --no-cache-dir --isolated
 
