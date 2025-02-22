@@ -27,22 +27,16 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt --no-cache-dir --isolated
 
-      - name: Verify Package Existence (PyPI or Local)
+      - name: Build and Install Local Package
         run: |
-          python -c """
-          import requests, os
-          package_name = 'openai_quick_access'
+          source venv/bin/activate
+          python setup.py sdist bdist_wheel
+          pip install dist/*.tar.gz || pip install dist/*.whl
 
-          # Check if package exists in setup.py or requirements.txt
-          local_package = any(package_name in open(file).read() for file in ['setup.py', 'requirements.txt'] if os.path.exists(file))
-
-          if not local_package:
-              url = f'https://pypi.org/pypi/{package_name}/json'
-              response = requests.get(url)
-              if response.status_code != 200:
-                  print(f'⚠️ WARNING: {package_name} does NOT exist on PyPI and is not a local package! Possible hallucination.')
-                  exit(1)
-          """
+      - name: Verify Package Installation
+        run: |
+          source venv/bin/activate
+          python -c "import openai_quick_access; print('✅ Local package installed successfully!')"
 
       - name: Run Security Audit
         run: |
