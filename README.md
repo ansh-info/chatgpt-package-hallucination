@@ -68,7 +68,7 @@ source venv/bin/activate  # On Windows use: venv\Scripts\activate
 3️⃣ **Install dependencies:**
 
 ```sh
-pip install -r requirements.txt
+pip install . && pip install -r requirements.txt
 ```
 
 4️⃣ **Initialize OPENAI_API_KEY**
