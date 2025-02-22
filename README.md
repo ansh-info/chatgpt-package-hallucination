@@ -71,6 +71,12 @@ source venv/bin/activate  # On Windows use: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+4️⃣ **Initialize OPENAI_API_KEY**
+
+```bash
+export OPENAI_API_KEY=....
+```
+
 ---
 
 ## 🏴‍☠️ Running the Exploit
